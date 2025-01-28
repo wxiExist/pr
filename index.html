@@ -1,167 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>wxiExist | Programmer Portfolio</title>
+    <title>Сайт-визитка</title>
     <style>
-        body {
+        * {
             margin: 0;
-            font-family: 'Arial', sans-serif;
-            background: black;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
             color: white;
-            overflow: hidden;
-        }
-
-        .container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            position: relative;
-        }
-
-        .content {
             text-align: center;
-            animation: fadeIn 2s ease;
-        }
-
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-        }
-
-        p {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        a {
-            color: #1abc9c;
-            text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
-
-        a:hover {
-            color: #16a085;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .glitch {
-            position: relative;
-            font-size: 3rem;
-            color: #1abc9c;
-            animation: glitch 1.5s infinite;
-        }
-
-        .glitch::before, .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
             overflow: hidden;
-            clip: rect(0, 900px, 0, 0);
         }
-
-        .glitch::before {
-            left: 2px;
-            text-shadow: -2px 0 red;
-            animation: glitch 2.5s infinite;
-        }
-
-        .glitch::after {
-            left: -2px;
-            text-shadow: -2px 0 blue;
-            animation: glitch 2s infinite;
-        }
-
-        @keyframes glitch {
-            0% { clip: rect(0, 900px, 0, 0); }
-            50% { clip: rect(50px, 900px, 20px, 0); }
-            100% { clip: rect(0, 900px, 0, 0); }
-        }
-
-        .dynamic-background {
+        .background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            object-fit: cover;
             z-index: -1;
-            overflow: hidden;
         }
-
-        .circle {
+        .profile {
             position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: rgba(0, 0, 0, 0.958);
+            padding: 20px;
+            border-radius: 15px;
+        }
+        .avatar {
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
-            background: rgba(255, 99, 71, 0.5);
-            animation: fadeOut 0.8s ease forwards;
         }
-
-        @keyframes fadeOut {
-            0% {
-                opacity: 1;
-                transform: scale(0.5);
-            }
-            100% {
-                opacity: 0;
-                transform: scale(2);
-            }
-        }
-
-        .typing {
-            font-size: 1.5rem;
-            color: #1abc9c;
-            overflow: hidden;
+        .typing-effect {
+            display: inline-block;
+            border-right: 2px solid white;
             white-space: nowrap;
-            border-right: 3px solid #1abc9c;
-            animation: typing 4s steps(40, end), blink 0.7s step-end infinite;
+            overflow: hidden;
+            font-size: 18px;
         }
-
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
+        .links {
+            margin-top: 15px;
         }
-
-        @keyframes blink {
-            from, to { border-color: transparent; }
-            50% { border-color: #1abc9c; }
+        .link {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background: #00bcd4;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
         }
     </style>
-    <script>
-        document.addEventListener('mousemove', (e) => {
-            const background = document.querySelector('.dynamic-background');
-            const circle = document.createElement('div');
-            const size = Math.random() * 50 + 10;
-
-            circle.classList.add('circle');
-            circle.style.width = `${size}px`;
-            circle.style.height = `${size}px`;
-            circle.style.left = `${e.clientX}px`;
-            circle.style.top = `${e.clientY}px`;
-
-            background.appendChild(circle);
-
-            setTimeout(() => {
-                circle.remove();
-            }, 3000);
-        });
-    </script>
 </head>
 <body>
-    <div class="dynamic-background"></div>
-    <div class="container">
-        <div class="content">
-            <h1 class="glitch" data-text="wxiExist">wxiExist</h1>
-            <div class="typing">Proficient in Python, C++, C, and C#.</div>
-            <p>Explore my work on <a href="https://github.com/wxiExist" target="_blank">GitHub</a>.</p>
+    <video autoplay loop playsinline class="background" id="bg-video" muted>
+        <source src="back.mp4" type="video/mp4">
+    </video>
+    <div class="profile">
+        <img src="avatar1.gif" class="avatar" alt="Аватарка">
+        <h1 style="color: red;">WxiExit</h1>
+        <p class="typing-effect" id="typing-text"></p>
+        <div class="links">
+            <a href="https://github.com/wxiExist" class="link">GitHub</a>
         </div>
     </div>
+
+    <script>
+        const text = "Proficient in Python, C++, C, and C#";
+        let i = 0;
+        function typeEffect() {
+            if (i < text.length) {
+                document.getElementById("typing-text").textContent += text.charAt(i);
+                i++;
+                setTimeout(typeEffect, 100);
+            }
+        }
+        window.onload = function() {
+            typeEffect();
+            const video = document.getElementById("bg-video");
+            video.muted = true;
+            video.play().catch(error => console.log("Автовоспроизведение заблокировано браузером"));
+        };
+    </script>
 </body>
 </html>
