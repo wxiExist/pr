@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wxiExist | Programmer Portfolio</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: black;
+            color: white;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        .content {
+            text-align: center;
+            animation: fadeIn 2s ease;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        a {
+            color: #1abc9c;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #16a085;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glitch {
+            position: relative;
+            font-size: 3rem;
+            color: #1abc9c;
+            animation: glitch 1.5s infinite;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            clip: rect(0, 900px, 0, 0);
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 red;
+            animation: glitch 2.5s infinite;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 blue;
+            animation: glitch 2s infinite;
+        }
+
+        @keyframes glitch {
+            0% { clip: rect(0, 900px, 0, 0); }
+            50% { clip: rect(50px, 900px, 20px, 0); }
+            100% { clip: rect(0, 900px, 0, 0); }
+        }
+
+        .dynamic-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 99, 71, 0.5);
+            animation: fadeOut 3s ease forwards;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+                transform: scale(0.5);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(2);
+            }
+        }
+
+        .typing {
+            font-size: 1.5rem;
+            color: #1abc9c;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid #1abc9c;
+            animation: typing 4s steps(40, end), blink 0.7s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink {
+            from, to { border-color: transparent; }
+            50% { border-color: #1abc9c; }
+        }
+    </style>
+    <script>
+        document.addEventListener('mousemove', (e) => {
+            const background = document.querySelector('.dynamic-background');
+            const circle = document.createElement('div');
+            const size = Math.random() * 50 + 10;
+
+            circle.classList.add('circle');
+            circle.style.width = `${size}px`;
+            circle.style.height = `${size}px`;
+            circle.style.left = `${e.clientX}px`;
+            circle.style.top = `${e.clientY}px`;
+
+            background.appendChild(circle);
+
+            setTimeout(() => {
+                circle.remove();
+            }, 3000);
+        });
+    </script>
+</head>
+<body>
+    <div class="dynamic-background"></div>
+    <div class="container">
+        <div class="content">
+            <h1 class="glitch" data-text="wxiExist">wxiExist</h1>
+            <div class="typing">Proficient in Python, C++, C, and C#.</div>
+            <p>Explore my work on <a href="https://github.com/wxiExist" target="_blank">GitHub</a>.</p>
+        </div>
+    </div>
+</body>
+</html>
