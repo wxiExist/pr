@@ -1,95 +1,139 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сайт-визитка</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            color: white;
-            text-align: center;
-            overflow: hidden;
-        }
-        .background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-        }
-        .profile {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            background: rgba(0, 0, 0, 0.958);
-            padding: 20px;
-            border-radius: 15px;
-        }
-        .avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-        }
-        .typing-effect {
-            display: inline-block;
-            border-right: 2px solid white;
-            white-space: nowrap;
-            overflow: hidden;
-            font-size: 18px;
-        }
-        .links {
-            margin-top: 15px;
-        }
-        .link {
-            display: inline-block;
-            margin: 10px;
-            padding: 10px 20px;
-            background: #00bcd4;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Технический анализ монеты</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* Тёмная минималистичная тема */
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 4px;
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #6200ee;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #3700b3;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #1e1e1e;
+      border-radius: 4px;
+    }
+    .error {
+      color: #ff5252;
+    }
+  </style>
 </head>
 <body>
-    <video autoplay loop playsinline class="background" id="bg-video" muted>
-        <source src="back.mp4" type="video/mp4">
-    </video>
-    <div class="profile">
-        <img src="avatar1.gif" class="avatar" alt="Аватарка">
-        <h1 style="color: red;">WxiExit</h1>
-        <p class="typing-effect" id="typing-text"></p>
-        <div class="links">
-            <a href="https://github.com/wxiExist" class="link">GitHub</a>
-        </div>
-    </div>
+  <div class="container">
+    <h2>Технический анализ</h2>
+    <form id="analyzeForm">
+      <input type="text" id="symbol" name="symbol" placeholder="Введите символ монеты, например TON" required>
+      <button type="submit">Анализировать</button>
+    </form>
+    <div id="result" class="result" style="display:none;"></div>
+  </div>
 
-    <script>
-        const text = "Proficient in Python, C++, C, and C#";
-        let i = 0;
-        function typeEffect() {
-            if (i < text.length) {
-                document.getElementById("typing-text").textContent += text.charAt(i);
-                i++;
-                setTimeout(typeEffect, 100);
-            }
-        }
-        window.onload = function() {
-            typeEffect();
-            const video = document.getElementById("bg-video");
-            video.muted = true;
-            video.play().catch(error => console.log("Автовоспроизведение заблокировано браузером"));
-        };
-    </script>
+  <script>
+    // Функция генерации демонстрационных данных (случайные значения)
+    function getCoinData() {
+      const prices = Array.from({length: 100}, () => (Math.random() * 100 + 50));
+      const volumes = Array.from({length: 100}, () => (Math.random() * 4000 + 1000));
+      return { prices, volumes };
+    }
+
+    // Расчёт SMA (скользящая средняя) за период period
+    function calculateSMA(prices, period = 14) {
+      if (prices.length < period) return null;
+      const sum = prices.slice(-period).reduce((acc, val) => acc + val, 0);
+      return (sum / period).toFixed(2);
+    }
+
+    // Расчёт RSI (индекс относительной силы) за период period
+    function calculateRSI(prices, period = 14) {
+      if (prices.length < period + 1) return null;
+      let gains = 0, losses = 0;
+      for (let i = prices.length - period - 1; i < prices.length - 1; i++) {
+        const delta = prices[i + 1] - prices[i];
+        if (delta >= 0) gains += delta;
+        else losses -= delta;
+      }
+      const avgGain = gains / period;
+      const avgLoss = losses / period;
+      if (avgLoss === 0) return 100;
+      const rs = avgGain / avgLoss;
+      const rsi = 100 - (100 / (1 + rs));
+      return rsi.toFixed(2);
+    }
+
+    // Расчёт волатильности объёма (стандартное отклонение / среднее * 100)
+    function calculateVolumeVolatility(volumes) {
+      const n = volumes.length;
+      const mean = volumes.reduce((acc, val) => acc + val, 0) / n;
+      const variance = volumes.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / n;
+      const stdDev = Math.sqrt(variance);
+      return ((stdDev / mean) * 100).toFixed(2);
+    }
+
+    // Обработчик формы
+    document.getElementById("analyzeForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const symbolInput = document.getElementById("symbol");
+      const symbol = symbolInput.value.trim().toUpperCase();
+      if (!symbol) {
+        showResult('<p class="error">Не указан символ монеты</p>');
+        return;
+      }
+      
+      // Получаем данные (демо-данные)
+      const { prices, volumes } = getCoinData();
+      const sma = calculateSMA(prices);
+      const rsi = calculateRSI(prices);
+      const volatility = calculateVolumeVolatility(volumes);
+      
+      // Вывод результата
+      const html = `
+        <p><strong>Монета:</strong> ${symbol}</p>
+        <p><strong>SMA:</strong> ${sma}</p>
+        <p><strong>RSI:</strong> ${rsi}</p>
+        <p><strong>Волатильность объёма:</strong> ${volatility}%</p>
+      `;
+      showResult(html);
+    });
+
+    function showResult(html) {
+      const resultDiv = document.getElementById("result");
+      resultDiv.style.display = "block";
+      resultDiv.innerHTML = html;
+    }
+  </script>
 </body>
 </html>
